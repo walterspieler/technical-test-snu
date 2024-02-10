@@ -1,13 +1,21 @@
-import { Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory } from "react-router-dom";
+import * as Yup from "yup";
 
 import Loader from "../../components/loader";
 import LoadingButton from "../../components/loadingButton";
 import ProgressBar from "../../components/ProgressBar";
 
 import api from "../../services/api";
+import InputErrorMessage from "../../components/inputErrorMassage";
+
+const CreateProjectSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  status: Yup.string().required("Required"),
+});
+
 const ProjectList = () => {
   const [projects, setProjects] = useState(null);
   const [activeProjects, setActiveProjects] = useState(null);
@@ -138,35 +146,36 @@ const Create = ({ onChangeSearch }) => {
             }}>
             {/* Modal Body */}
             <Formik
-              initialValues={{}}
+              validationSchema={CreateProjectSchema}
+              initialValues={{ name: "", status: "active" }}
               onSubmit={async (values, { setSubmitting }) => {
                 try {
-                  values.status = "active";
                   const res = await api.post("/project", values);
                   if (!res.ok) throw res;
                   toast.success("Created!");
                   setOpen(false);
                 } catch (e) {
                   console.log(e);
-                  toast.error("Some Error!", e.code);
+                  toast.error(`Error: ${e.code}`);
                 }
                 setSubmitting(false);
               }}>
-              {({ values, handleChange, handleSubmit, isSubmitting }) => (
-                <React.Fragment>
-                  <div className="w-full md:w-6/12 text-left">
-                    <div>
-                      <div className="text-[14px] text-[#212325] font-medium	">Name</div>
-                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="name" value={values.name} onChange={handleChange} />
+              {({ isSubmitting }) => (
+                <Form>
+                  <div className="mb-[25px]">
+                    <div className="flex flex-col">
+                      <label className="peer-focus:text-[#116eee]" htmlFor="name">
+                        Name
+                      </label>
+                      <Field className="peer signInInputs" name="name" type="text" id="name" />
                     </div>
-                    <LoadingButton
-                      className="mt-[1rem] bg-[#0560FD] text-[16px] font-medium text-[#FFFFFF] py-[12px] px-[22px] rounded-[10px]"
-                      loading={isSubmitting}
-                      onClick={handleSubmit}>
-                      Create
-                    </LoadingButton>
+                    {/* Error */}
+                    <ErrorMessage component={InputErrorMessage} name="name" />
                   </div>
-                </React.Fragment>
+                  <LoadingButton className="mt-[1rem] bg-[#0560FD] text-[16px] font-medium text-[#FFFFFF] py-[12px] px-[22px] rounded-[10px]" loading={isSubmitting} type="submit">
+                    Create
+                  </LoadingButton>
+                </Form>
               )}
             </Formik>
           </div>

@@ -5,7 +5,7 @@ import Edit from "./edit";
 import ProjectList from "./list";
 import ProjectView from "./view";
 
-export default () => {
+const ProjectSwitch = () => {
   return (
     <Switch>
       <Route path="/project/edit/:id" component={Edit} />
@@ -14,3 +14,5 @@ export default () => {
     </Switch>
   );
 };
+
+export default ProjectSwitch;
