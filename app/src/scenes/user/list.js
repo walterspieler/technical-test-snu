@@ -113,6 +113,7 @@ const Create = () => {
               e.stopPropagation();
             }}>
             <Formik
+              initialValues={{ name: "", email: "", password: "" }}
               validationSchema={AddUserSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 try {

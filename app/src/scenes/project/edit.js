@@ -1,17 +1,15 @@
-import { Formik } from "formik";
+import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
 import { useHistory, useParams } from "react-router-dom";
 import Loader from "../../components/loader";
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
 
 import toast from "react-hot-toast";
+import InputErrorMessage from "../../components/inputErrorMassage";
 
 export default function EditProject() {
   const [project, setProject] = useState(null);
-  const [bufferOtherLink, setBufferOtherLink] = useState("");
-  const [bufferOtherLinkLabel, setBufferOtherLinkLabel] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -56,168 +54,164 @@ export default function EditProject() {
                 toast.error("Some Error!");
               }
             }}>
-            {({ values, handleChange, handleSubmit, isSubmitting }) => (
-              <React.Fragment>
+            {({ values, handleSubmit, isSubmitting }) => (
+              <Form>
                 <div className="flex gap-4 pl-4 pt-4">
                   {project.logo && <img className="w-[85px] h-[85px] border border-[#E5EAEF] rounded-[8px]" src={project.logo} alt="ProjectImage.png" />}
                 </div>
 
                 <div className="py-3 px-4">
-                  <div className="flex gap-4 flex-wrap">
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Name of project</div>
-                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="name" disabled value={values.name} onChange={handleChange} />
+                  <div className="flex gap-4 mt-3">
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="name">
+                          Name of the project
+                        </label>
+                        <Field className="peer signInInputs" name="name" type="text" id="name" />
+                      </div>
+                      {/* Error */}
+                      <InputErrorMessage component={InputErrorMessage} name="name" />
                     </div>
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Lead by name</div>
-                      <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="lead" value={values.lead} onChange={handleChange} />
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="lead">
+                          Lead by name
+                        </label>
+                        <Field className="peer signInInputs" name="lead" type="text" id="lead" />
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="lead" />
                     </div>
-                    <div className="w-full md:w-[260px] mt-2">
-                      <div className="text-[14px] text-[#212325] font-medium	">Status</div>
-                      <select className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="status" value={values.status} onChange={handleChange}>
-                        <option value=""></option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="status">
+                          Status
+                        </label>
+                        <Field as="select" className="peer signInInputs" name="status" id="status">
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                        </Field>
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="status" />
                     </div>
                   </div>
                   <div className="flex gap-4 mt-3">
-                    <div className="w-full md:w-[260px]">
-                      <div className="text-[14px] text-[#212325] font-medium	">Budget max / month</div>
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        type="number"
-                        name="budget_max_monthly"
-                        value={values.budget_max_monthly}
-                        onChange={handleChange}
-                      />
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="budget_max_monthly">
+                          Budget max / month
+                        </label>
+                        <Field className="peer signInInputs" name="budget_max_monthly" type="text" id="budget_max_monthly" />
+                      </div>
+                      {/* Error */}
+                      <InputErrorMessage component={InputErrorMessage} name="budget_max_monthly" />
                     </div>
-                    <div className="w-full md:w-[260px] ">
-                      <div className="text-[14px] text-[#212325] font-medium	">Payment cycle</div>
-                      <select
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        name="paymentCycle"
-                        value={values.paymentCycle}
-                        onChange={handleChange}>
-                        <option value=""></option>
-                        <option value="MONTHLY">Monthly</option>
-                        <option value="ONE_TIME">One time</option>
-                      </select>
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="payment_cycle">
+                          Status
+                        </label>
+                        <Field as="select" className="peer signInInputs" name="payment_cycle" id="status">
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="ONE_TIME">One time</option>
+                        </Field>
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="payment_cycle" />
                     </div>
                   </div>
 
                   <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium">Description</div>
-                    <textarea
-                      className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
-                      type="textarea"
-                      rows="5"
-                      placeholder="Please your comment...."
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange}></textarea>
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="description">
+                          Description
+                        </label>
+                        <Field as="textarea" className="peer signInInputs" name="description" id="description" rows={10} />
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="description" />
+                    </div>
+                  </div>
+                  <div className="w-full mt-3">
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="objective">
+                          Objective
+                        </label>
+                        <Field as="textarea" className="peer signInInputs" name="objective" id="objective" rows={10} />
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="objective" />
+                    </div>
                   </div>
 
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium">Objective</div>
-                    <textarea
-                      className="w-full border border-[#ced4da] rounded-[10px] text-[14px] font-normal p-2 mt-2  focus:outline-none focus:ring focus:ring-[#80bdff]"
-                      type="textarea"
-                      rows="5"
-                      placeholder="Please your comment...."
-                      name="objective"
-                      value={values.objective}
-                      onChange={handleChange}></textarea>
-                  </div>
                   <div className="text-xl mt-8">Links</div>
                   <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium	">Website</div>
-                    <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="website" value={values.website} onChange={handleChange} />
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="website">
+                          Website
+                        </label>
+                        <Field className="peer signInInputs" name="website" id="website" />
+                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="website" />
+                    </div>
                   </div>
-
-                  <div className="w-full mt-3">
-                    <div className="text-[14px] text-[#212325] font-medium	">Autres</div>
-                    {(values.links || []).map((link) => {
-                      return (
-                        <div className="flex flex-1 flex-row mt-2 items-center gap-1">
-                          <div className="flex gap-1 flex-1 items-center">
-                            <input
-                              className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
-                              value={link.label}
-                              onChange={(e) => {
-                                const links = values.links.reduce((prev, current) => {
-                                  const tempLink = current;
-                                  if (current.url === link.url) {
-                                    tempLink.label = e.target.value;
-                                  }
-                                  return [...prev, tempLink];
-                                }, []);
-                                handleChange({ target: { value: links, name: "links" } });
-                              }}
-                            />
-                            <input
-                              className="projectsInput mt-0 text-[14px] font-normal text-[#212325] rounded-[10px]"
-                              value={link.url}
-                              onChange={(e) => {
-                                const links = values.links.reduce((prev, current) => {
-                                  const tempLink = current;
-                                  if (current.label === link.label) {
-                                    tempLink.url = e.target.value;
-                                  }
-                                  return [...prev, tempLink];
-                                }, []);
-                                handleChange({ target: { value: links, name: "links" } });
-                              }}
-                            />
-                          </div>
-                          <div className={`flex justify-center cursor-pointer text-xl hover:text-red-500`}>
-                            <MdDeleteForever
-                              onClick={() => {
-                                const newLinks = values.links.filter((l) => l.url !== link.url);
-                                handleChange({ target: { value: newLinks, name: "links" } });
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        const newLink = {
-                          label: bufferOtherLinkLabel || bufferOtherLink,
-                          url: bufferOtherLink,
-                        };
-                        handleChange({ target: { value: [...values.links, newLink], name: "links" } });
-                        setBufferOtherLink("");
-                        setBufferOtherLinkLabel("");
-                      }}>
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        name="other-links-label"
-                        value={bufferOtherLinkLabel}
-                        onChange={(e) => {
-                          setBufferOtherLinkLabel(e.target.value);
-                        }}
-                        placeholder="My super website"
-                      />
-                      <input
-                        className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]"
-                        required
-                        name="other-links"
-                        value={bufferOtherLink}
-                        onChange={(e) => {
-                          setBufferOtherLink(e.target.value);
-                        }}
-                        placeholder="https://mysuperwebsite.com"
-                      />
-                      {bufferOtherLink ? (
-                        <button className="px-4 py-2 rounded-xl bg-[#0560FD] text-white mt-2" type="submit">
-                          ajouter
-                        </button>
-                      ) : null}
-                    </form>
-                  </div>
+                  <FieldArray
+                    name="links"
+                    render={(arrayHelpers) => (
+                      <div>
+                        {values.links && values.links.length > 0 ? (
+                          values.links.map((link, index) => (
+                            <div key={index} className="flex justify-center items-end gap-x-5">
+                              <div className="w-full mt-3">
+                                <div className="w-full mx-2">
+                                  <div className="flex flex-col">
+                                    <label className="peer-focus:text-[#116eee]" htmlFor={`links.${index}.label`}>
+                                      Label
+                                    </label>
+                                    <Field className="peer signInInputs" name={`links.${index}.label`} id={`links.${index}.label`} />
+                                  </div>
+                                  {/* Error */}
+                                  <ErrorMessage component={InputErrorMessage} name={`links.${index}.label`} />
+                                </div>
+                              </div>
+                              <div className="w-full mt-3">
+                                <div className="w-full mx-2">
+                                  <div className="flex flex-col">
+                                    <label className="peer-focus:text-[#116eee]" htmlFor={`links.${index}.url`}>
+                                      URL
+                                    </label>
+                                    <Field className="peer signInInputs" name={`links.${index}.url`} id={`links.${index}.url`} />
+                                  </div>
+                                  {/* Error */}
+                                  <ErrorMessage component={InputErrorMessage} name={`links.${index}.url`} />
+                                </div>
+                              </div>
+                              <div>
+                                <LoadingButton
+                                  className="ml-[10px] bg-[#0560FD] text-[16px] font-medium text-[#fff] py-[9px] px-[22px] mb-2 rounded-[10px]"
+                                  loading={isSubmitting}
+                                  onClick={() => arrayHelpers.remove(index)}>
+                                  Delete
+                                </LoadingButton>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <LoadingButton
+                            className="ml-[10px] bg-[#0560FD] text-[16px] font-medium text-[#fff] py-[12px] px-[22px] rounded-[10px]"
+                            loading={isSubmitting}
+                            onClick={() => arrayHelpers.push({ label: "", url: "" })}>
+                            Add link
+                          </LoadingButton>
+                        )}
+                      </div>
+                    )}
+                  />
                 </div>
                 <div className="flex ml-3 mt-2">
                   <LoadingButton
@@ -230,7 +224,7 @@ export default function EditProject() {
                     Delete
                   </button>
                 </div>
-              </React.Fragment>
+              </Form>
             )}
           </Formik>
         </div>
