@@ -1,16 +1,23 @@
-import { Field, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import validator from "validator";
+import * as Yup from "yup";
 
 import { setUser } from "../../redux/auth/actions";
 
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
+import InputErrorMessage from "../../components/inputErrorMassage";
 
-export default () => {
+const SigninSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  password: Yup.string().required("Required"),
+});
+
+const SignInPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Auth.user);
 
@@ -21,56 +28,41 @@ export default () => {
 
       {user && <Redirect to="/" />}
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ name: "", password: "" }}
+        validationSchema={SigninSchema}
         onSubmit={async (values, actions) => {
           try {
             const { user, token } = await api.post(`/user/signin`, values);
             if (token) api.setToken(token);
+            actions.setSubmitting(false);
             if (user) dispatch(setUser(user));
           } catch (e) {
-            console.log("e", e);
-            toast.error("Wrong login", e.code);
+            toast.error(`Wrong login: ${e.code}`);
+            actions.setSubmitting(false);
           }
-          actions.setSubmitting(false);
         }}>
-        {({ values, errors, isSubmitting, handleChange, handleSubmit }) => {
+        {({ isSubmitting }) => {
           return (
-            <form onSubmit={handleSubmit}>
+            <Form>
               <div className="mb-[25px]">
                 <div className="flex flex-col-reverse">
-                  <Field
-                    className="peer signInInputs "
-                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
-                    name="username"
-                    type="text"
-                    id="username"
-                    value={values.username}
-                    onChange={handleChange}
-                  />
+                  <Field className="peer signInInputs " validate={(v) => validator.isEmpty(v) && "This field is Required"} name="name" type="text" id="username" />
                   <label className="peer-focus:text-[#116eee]" htmlFor="username">
                     Username
                   </label>
                 </div>
                 {/* Error */}
-                <p className="text-[12px] text-[#FD3131]">{errors.username}</p>
+                <ErrorMessage component={InputErrorMessage} name="name" />
               </div>
               <div className="mb-[25px]">
                 <div className="flex flex-col-reverse">
-                  <Field
-                    className="peer signInInputs"
-                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
-                    name="password"
-                    type="password"
-                    id="password"
-                    value={values.password}
-                    onChange={handleChange}
-                  />
+                  <Field className="peer signInInputs" validate={(v) => validator.isEmpty(v) && "This field is Required"} name="password" type="password" id="password" />
                   <label className="peer-focus:text-[#116eee]" htmlFor="password">
                     Password
                   </label>
                 </div>
                 {/* Error */}
-                <p className="text-[12px] text-[#FD3131]">{errors.password}</p>
+                <ErrorMessage component={InputErrorMessage} name="password" />
               </div>
               {/* SignIn Button */}
               <div className="flex gap-3">
@@ -88,10 +80,12 @@ export default () => {
                   Signup
                 </LoadingButton>
               </div>
-            </form>
+            </Form>
           );
         }}
       </Formik>
     </div>
   );
 };
+
+export default SignInPage;
