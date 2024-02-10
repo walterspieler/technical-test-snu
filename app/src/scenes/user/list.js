@@ -1,10 +1,18 @@
-import { Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useHistory } from "react-router-dom";
 import Loader from "../../components/loader";
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
+import InputErrorMessage from "../../components/inputErrorMassage";
+import * as Yup from "yup";
+
+const AddUserSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  email: Yup.string().required("Required"),
+  password: Yup.string().min(6, "Password too short").max(100, "Password too long").required("Required"),
+});
 
 const NewList = () => {
   const [users, setUsers] = useState(null);
@@ -105,7 +113,7 @@ const Create = () => {
               e.stopPropagation();
             }}>
             <Formik
-              initialValues={{}}
+              validationSchema={AddUserSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 try {
                   values.status = "active";
@@ -122,36 +130,49 @@ const Create = () => {
                 }
                 setSubmitting(false);
               }}>
-              {({ values, handleChange, handleSubmit, isSubmitting }) => (
-                <React.Fragment>
-                  <div>
-                    <div className="flex justify-between flex-wrap">
-                      <div className="w-full md:w-[48%] mt-2">
-                        <div className="text-[14px] text-[#212325] font-medium	">Name</div>
-                        <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="username" value={values.username} onChange={handleChange} />
+              {({ isSubmitting }) => (
+                <Form>
+                  <div className="flex justify-start mb-3">
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="name">
+                          Name
+                        </label>
+                        <Field className="peer signInInputs" name="name" type="text" id="name" />
                       </div>
-                      <div className="w-full md:w-[48%] mt-2">
-                        <div className="text-[14px] text-[#212325] font-medium	">Email</div>
-                        <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="email" value={values.email} onChange={handleChange} />
-                      </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="name" />
                     </div>
-                    <div className="flex justify-between flex-wrap mt-3">
-                      {/* Password */}
-                      <div className="w-full md:w-[48%] mt-2">
-                        <div className="text-[14px] text-[#212325] font-medium	">Password</div>
-                        <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="password" value={values.password} onChange={handleChange} />
+                    <div className="w-full mx-2">
+                      <div className="flex flex-col">
+                        <label className="peer-focus:text-[#116eee]" htmlFor="email">
+                          Email
+                        </label>
+                        <Field className="peer signInInputs" name="email" type="text" id="email" />
                       </div>
+                      {/* Error */}
+                      <ErrorMessage component={InputErrorMessage} name="email" />
                     </div>
                   </div>
-
-                  <br />
-                  <LoadingButton
-                    className="mt-[1rem]  bg-[#0560FD] text-[16px] font-medium text-[#FFFFFF] py-[12px] px-[22px] rounded-[10px]"
-                    loading={isSubmitting}
-                    onClick={handleSubmit}>
-                    Save
-                  </LoadingButton>
-                </React.Fragment>
+                  <div className="mx-2">
+                    <div className="flex flex-col">
+                      <label className="peer-focus:text-[#116eee]" htmlFor="password">
+                        Password
+                      </label>
+                      <Field className="peer signInInputs" name="password" type="password" id="password" />
+                    </div>
+                    {/* Error */}
+                    <ErrorMessage component={InputErrorMessage} name="password" />
+                  </div>
+                  <div className="flex justify-end">
+                    <LoadingButton
+                      className=" mt-[1rem] bg-[#0560FD] text-[16px] font-medium text-[#FFFFFF] py-[12px] px-[22px] rounded-[10px]"
+                      loading={isSubmitting}
+                      type="submit">
+                      Create user
+                    </LoadingButton>
+                  </div>
+                </Form>
               )}
             </Formik>
           </div>
@@ -210,7 +231,7 @@ const FilterStatus = ({ filter, setFilter }) => {
   );
 };
 
-const UserCard = ({ hit, projects }) => {
+const UserCard = ({ hit }) => {
   const history = useHistory();
   return (
     <div
