@@ -1,94 +1,79 @@
-import { Field, Formik } from "formik";
 import React from "react";
+
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
-import validator from "validator";
+import { Redirect } from "react-router-dom";
+import * as Yup from "yup";
 
 import { setUser } from "../../redux/auth/actions";
 
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
+import InputErrorMessage from "../../components/inputErrorMassage";
 
-export default () => {
+const SignupSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  organisation: Yup.string().required("Required"),
+  password: Yup.string().min(6, "Password too short").max(100, "Password too long").required("Required"),
+});
+
+const SignupPage = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Auth.user);
 
   return (
     // Auth Wrapper
     <div className="authWrapper font-myfont">
-      <div className="font-[Helvetica] text-center text-[32px] font-semibold	mb-[15px]">Account team</div>
+      <div className="font-[Helvetica] text-center text-[32px] font-semibold mb-[15px]">Account team</div>
 
       {user && <Redirect to="/" />}
       <Formik
-        initialValues={{ username: "", organisation: "", password: "" }}
+        initialValues={{ name: "", organisation: "", password: "" }}
+        validationSchema={SignupSchema}
         onSubmit={async (values, actions) => {
           try {
             const { user, token } = await api.post(`/user/signup`, values);
             if (token) api.setToken(token);
+            actions.setSubmitting(false);
             if (user) dispatch(setUser(user));
           } catch (e) {
-            console.log("e", e);
-            toast.error("Wrong login", e.code);
+            toast.error(`Wrong login: ${e.code}`);
+            actions.setSubmitting(false);
           }
-          actions.setSubmitting(false);
         }}>
-        {({ values, errors, isSubmitting, handleChange, handleSubmit }) => {
+        {({ isSubmitting }) => {
           return (
-            <form onSubmit={handleSubmit}>
+            <Form>
               <div className="mb-[25px]">
-                <div className="flex flex-col-reverse">
-                  <Field
-                    className="peer signInInputs "
-                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
-                    name="username"
-                    type="text"
-                    id="username"
-                    value={values.username}
-                    onChange={handleChange}
-                  />
-                  <label className="peer-focus:text-[#116eee]" htmlFor="username">
+                <div className="flex flex-col">
+                  <label className="peer-focus:text-[#116eee]" htmlFor="name">
                     Username
                   </label>
+                  <Field className="peer signInInputs " name="name" type="text" id="name" />
                 </div>
                 {/* Error */}
-                <p className="text-[12px] text-[#FD3131]">{errors.username}</p>
+                <ErrorMessage component={InputErrorMessage} name="name" />
               </div>
               <div className="mb-[25px]">
-                <div className="flex flex-col-reverse">
-                  <Field
-                    className="peer signInInputs "
-                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
-                    name="organisation"
-                    type="text"
-                    id="organisation"
-                    value={values.organisation}
-                    onChange={handleChange}
-                  />
+                <div className="flex flex-col">
                   <label className="peer-focus:text-[#116eee]" htmlFor="organisation">
                     Organisation name
                   </label>
+                  <Field className="peer signInInputs" name="organisation" type="text" id="organisation" />
                 </div>
                 {/* Error */}
-                <p className="text-[12px] text-[#FD3131]">{errors.organisation}</p>
+                <ErrorMessage component={InputErrorMessage} name="organisation" />
               </div>
               <div className="mb-[25px]">
-                <div className="flex flex-col-reverse">
-                  <Field
-                    className="peer signInInputs"
-                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
-                    name="password"
-                    type="password"
-                    id="password"
-                    value={values.password}
-                    onChange={handleChange}
-                  />
+                <div className="flex flex-col">
                   <label className="peer-focus:text-[#116eee]" htmlFor="password">
                     Password
                   </label>
+                  <Field className="peer signInInputs" name="password" type="password" id="password" />
                 </div>
                 {/* Error */}
-                <p className="text-[12px] text-[#FD3131]">{errors.password}</p>
+                <ErrorMessage component={InputErrorMessage} name="password" />
               </div>
               {/* SignIn Button */}
               <LoadingButton
@@ -98,10 +83,12 @@ export default () => {
                 color="primary">
                 Signup
               </LoadingButton>
-            </form>
+            </Form>
           );
         }}
       </Formik>
     </div>
   );
 };
+
+export default SignupPage;
