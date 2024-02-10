@@ -95,9 +95,16 @@ const Activities = ({ date, user, project }) => {
 
   async function onDelete(i) {
     if (window.confirm("Are you sure ?")) {
-      const activity = activities[i];
-      await api.remove(`/activity/${activity._id}`);
-      toast.success(`Deleted ${activity.project}`);
+      try {
+        const activity = activities[i];
+        console.log(activity);
+        const projectName = activity.projectName;
+        await api.remove(`/activity/${activity._id}`);
+        setActivities(activities.filter((a) => a._id !== activity._id));
+        toast.success(`Deleted ${projectName}`);
+      } catch (error) {
+        toast.error(`Error: ${error.code}`);
+      }
     }
   }
 
@@ -184,7 +191,7 @@ const Activities = ({ date, user, project }) => {
                               </div>
                               <div className="flex flex-col items-end">
                                 <div className="text-xs italic font-normal">{(e.total / 8).toFixed(2)} days</div>
-                                <div className="text-[10px] italic font-normal">{(((e.total / 8).toFixed(2) / getTotal()) * 100).toFixed(2)}%</div>
+                                {e.total && <div className="text-[10px] italic font-normal">{(((e.total / 8).toFixed(2) / getTotal()) * 100).toFixed(2)}%</div>}
                               </div>
                             </div>
                           </th>
