@@ -43,7 +43,13 @@ const ProjectList = () => {
 
   return (
     <div className="w-full p-2 md:!px-8">
-      <Create onChangeSearch={handleSearch} />
+      <Create
+        onChangeSearch={handleSearch}
+        onCreate={(newProject) => {
+          setProjects([newProject, ...projects]);
+          setActiveProjects([newProject, ...activeProjects]);
+        }}
+      />
       <div className="py-3">
         {activeProjects.map((hit) => {
           return (
@@ -100,7 +106,7 @@ const Budget = ({ project }) => {
   return <ProgressBar percentage={width} max={budget_max_monthly} value={total} />;
 };
 
-const Create = ({ onChangeSearch }) => {
+const Create = ({ onChangeSearch, onCreate }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -152,6 +158,7 @@ const Create = ({ onChangeSearch }) => {
                 try {
                   const res = await api.post("/project", values);
                   if (!res.ok) throw res;
+                  onCreate(res.data);
                   toast.success("Created!");
                   setOpen(false);
                 } catch (e) {

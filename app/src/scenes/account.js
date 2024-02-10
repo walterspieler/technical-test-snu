@@ -30,7 +30,7 @@ const AccountPage = () => {
       dispatch(setUser(responseData.user));
     } catch (e) {
       console.log(e);
-      toast.error("Some Error!");
+      toast.error(`Error: ${e.code}`);
     }
     setIsLoading(false);
   }
