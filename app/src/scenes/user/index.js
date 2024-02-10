@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import User from "./list";
 import UserView from "./view";
 
-export default () => {
+const UserSwitch = () => {
   return (
     <Switch>
       <Route path="/user/:id" component={UserView} />
@@ -12,3 +12,5 @@ export default () => {
     </Switch>
   );
 };
+
+export default UserSwitch;

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default ({ loading, children, disabled, ...rest }) => (
+const LoadingButton = ({ loading, children, disabled, ...rest }) => (
   <button
     {...rest}
     disabled={loading || disabled}
@@ -21,3 +21,4 @@ export default ({ loading, children, disabled, ...rest }) => (
     {!loading && children}
   </button>
 );
+export default LoadingButton;
