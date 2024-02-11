@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
+
 export function getMonths(count = 20) {
   const arr = [];
   var d = new Date();
@@ -7,10 +10,12 @@ export function getMonths(count = 20) {
   return arr;
 }
 
-export function formatDate(date) {
-  const d = new Date(date);
-  return d.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+export function formatDate(date, dFormat = "dd/MM/yy @HH:mm") {
+  // Convert to your desired timezone if needed
+  if (!date) {
+    return "-";
+  }
+
+  // Format the date in English relative format
+  return format(new Date(date), dFormat, { locale: enUS });
 }

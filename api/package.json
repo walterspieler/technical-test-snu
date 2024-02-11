@@ -13,6 +13,7 @@
     "printWidth": 150
   },
   "dependencies": {
+    "@json2csv/plainjs": "^7.0.6",
     "aws-sdk": "^2.729.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
