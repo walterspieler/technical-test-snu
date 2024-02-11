@@ -1,3 +1,9 @@
 {
-  "conventionalCommits.scopes": ["Auth", "Users", "Projects", "Activity"]
+  "conventionalCommits.scopes": [
+    "Auth",
+    "Users",
+    "Projects",
+    "Activity",
+    "Global"
+  ]
 }
