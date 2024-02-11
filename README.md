@@ -42,22 +42,22 @@ Send us the project and answer to those simple questions :
 
 - What bugs did you find ? How did you solve these and why ?
 
-The PASSWORD_NOT_VALIDATED error was outputting a Success 200 status instead of a Bad Request 400 error.
-Components were missing a display name, which can be a problem when using the developer tool. This was fixed in multiple places by exporting a named arrow function.
-I removed the col reverse flex CSS class for more clarity.
-Replaced the HTML form with the Form Component from Formik. Using a library as recommended by the library itself is a good practice. It also enhances readability and reduces the line count.
-Some missing fields were added to the user edit form.
-I removed multiple unnecessary React Fragments and added keys to some loops that didn't have one or had a wrong one (duplicate keys).
-I replaced Find with FindOne in the route /project/:id. Find outputs an array, but we only want an object for this route.
-I used FieldArray to handle array values in forms. With this component, I've been able to have only one form. It's bad practice to have forms within other forms.
-Activity removal was fixed (It was updating the state after component removal).
-In Activity, the date wasn’t being sent to the API. This has been fixed.
-All the details of what I fixed are viewable in the different Pull Requests I made. They're closed, but you can still view them.
+- The PASSWORD_NOT_VALIDATED error was outputting a Success 200 status instead of a Bad Request 400 error.
+- Components were missing a display name, which can be a problem when using the developer tool. This was fixed in multiple places by exporting a named arrow function.
+- I removed the col reverse flex CSS class for more clarity.
+- Replaced the HTML form with the Form Component from Formik. Using a library as recommended by the library itself is a good practice. It also enhances readability and reduces the line count.
+  Some missing fields were added to the user edit form.
+- I removed multiple unnecessary React Fragments and added keys to some loops that didn't have one or had a wrong one (duplicate keys).
+- I replaced Find with FindOne in the route /project/:id. Find outputs an array, but we only want an object for this route.
+- I used FieldArray to handle array values in forms. With this component, I've been able to have only one form. It's bad practice to have forms within other forms.
+- Activity removal was fixed (It was updating the state after component removal).
+- In Activity, the date wasn’t being sent to the API. This has been fixed.
+- All the details of what I fixed are viewable in the different Pull Requests I made. They're closed, but you can still view them.
 
 - Which feature did you develop and why ?
 
-The feature I developed was a single view for activity details, to enable users to view data of a single activity. I also added a button to allow users to export activity data as a CSV. This can help users analyze their data, and CSV is a format that is widely used. It also aids in data portability if the user has tools other than ours.
-It's not major change but I replaced the method to handle dates to be able to choose the wanted date format with it. I used date-fns since it's a popular tool easy to use to handle dates. Since the project could evolve and have date calculations/comparisons it doesn't feel useless to begin to use it and add this dependency.
+- The feature I developed was a single view for activity details, to enable users to view data of a single activity. I also added a button to allow users to export activity data as a CSV. This can help users analyze their data, and CSV is a format that is widely used. It also aids in data portability if the user has tools other than ours.
+- It's not major change but I replaced the method to handle dates to be able to choose the wanted date format with it. I used date-fns since it's a popular tool easy to use to handle dates. Since the project could evolve and have date calculations/comparisons it doesn't feel useless to begin to use it and add this dependency.
 
 - Do you have any feedback about the code / architecture of the project and what was the difficulty you encountered while doing it ?
 
