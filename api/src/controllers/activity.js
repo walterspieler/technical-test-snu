@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require("passport");
+const { Parser } = require("@json2csv/plainjs");
 const router = express.Router();
 
 const ActivityObject = require("../models/activity");
@@ -31,6 +32,29 @@ router.get("/", passport.authenticate("user", { session: false }), async (req, r
     }
 
     const data = await ActivityObject.find({ ...query, organisation: req.user.organisation }).sort("-created_at");
+    return res.status(200).send({ ok: true, data });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ ok: false, code: SERVER_ERROR, error });
+  }
+});
+
+router.get("/:id/details", passport.authenticate("user", { session: false }), async (req, res) => {
+  try {
+    const data = await ActivityObject.findOne({ _id: req.params.id });
+    const opts = { fields: ["date", "value"] };
+    const parser = new Parser(opts);
+    const csv = parser.parse([...data.detail.filter((d) => d.value > 0), { date: "Total", value: data.total }]);
+    return res.status(200).send({ ok: true, data: csv });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ ok: false, code: SERVER_ERROR, error });
+  }
+});
+
+router.get("/:id", passport.authenticate("user", { session: false }), async (req, res) => {
+  try {
+    const data = await ActivityObject.findOne({ _id: req.params.id });
     return res.status(200).send({ ok: true, data });
   } catch (error) {
     console.log(error);
